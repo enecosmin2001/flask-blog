@@ -10,9 +10,9 @@ class Config:
     MAIL_TLS = os.environ.get("MAIL_USE_TLS", "true").lower() in ["true", "on", "1"]
     MAIL_USERNAME = os.environ.get("MAIL_USERNAME")
     MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")
-    FlaskBlog_MAIL_SUBJECT_PREFIX = "[FlaskBlog]"
-    FlaskBlog_MAIL_SENDER = "FlaskBlog Admin <FlaskBlog@example.com>"
-    FlaskBlog_ADMIN = os.environ.get("FlaskBlog_ADMIN")
+    FLASKBLOG_MAIL_SUBJECT_PREFIX = "[FlaskBlog]"
+    FLASKBLOG_MAIL_SENDER = "FlaskBlog Admin <FlaskBlog@example.com>"
+    FLASKBLOG_ADMIN = os.environ.get("FLASKBLOG_ADMIN", "enecosmin2001@gmail.com")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     @staticmethod
@@ -29,7 +29,7 @@ class DevelopmentConfig(Config):
 
 class TestingConfig(Config):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get("TEST_DATABASE_URL") | "sqlite://"
+    SQLALCHEMY_DATABASE_URI = os.environ.get("TEST_DATABASE_URL") or "sqlite://"
 
 
 class ProductionConfig(Config):
