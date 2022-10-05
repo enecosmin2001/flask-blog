@@ -1,5 +1,9 @@
 import os
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
@@ -10,10 +14,11 @@ class Config:
     MAIL_TLS = os.environ.get("MAIL_USE_TLS", "true").lower() in ["true", "on", "1"]
     MAIL_USERNAME = os.environ.get("MAIL_USERNAME")
     MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")
-    FLASKBLOG_MAIL_SUBJECT_PREFIX = "[FlaskBlog]"
-    FLASKBLOG_MAIL_SENDER = "FlaskBlog Admin <FlaskBlog@example.com>"
-    FLASKBLOG_ADMIN = os.environ.get("FLASKBLOG_ADMIN", "enecosmin2001@gmail.com")
+    FLASKBLOG_MAIL_SUBJECT_PREFIX = os.environ.get("FLASKBLOG_MAIL_SUBJECT_PREFIX")
+    FLASKBLOG_MAIL_SENDER = os.environ.get("FLASKBLOG_MAIL_SENDER")
+    FLASKBLOG_ADMIN = os.environ.get("FLASKBLOG_ADMIN")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    FLASKBLOG_POSTS_PER_PAGE = int(os.environ.get("FLASKBLOG_POSTS_PER_PAGE"))
 
     @staticmethod
     def init_app(app):

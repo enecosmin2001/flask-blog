@@ -1,3 +1,5 @@
+{% import "_macros.html" as macros %}
+
 {% extends "base.html" %}
 
 {% block title %}FlaskBlog - {{ user.username }}{% endblock %}
@@ -27,5 +29,11 @@
     {% endif %}
 </div>
 <h3>Posts by {{ user.username }}</h3>
+<div class="pagination">
+    {{ macros.pagination_widget(pagination, '.index') }}
+</div>
 {% include '_posts.html' %}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination, '.index') }}
+</div>
 {% endblock %}
