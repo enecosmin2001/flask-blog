@@ -30,10 +30,10 @@
 </div>
 <h3>Posts by {{ user.username }}</h3>
 <div class="pagination">
-    {{ macros.pagination_widget(pagination, '.user') }}
+    {{ macros.pagination_widget(pagination, '.user', username=current_user.username) }}
 </div>
 {% include '_posts.html' %}
 <div class="pagination">
-    {{ macros.pagination_widget(pagination, '.user') }}
+    {{ macros.pagination_widget(pagination, '.user', username=current_user.username) }}
 </div>
 {% endblock %}
