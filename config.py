@@ -19,6 +19,7 @@ class Config:
     FLASKBLOG_ADMIN = os.environ.get("FLASKBLOG_ADMIN")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     FLASKBLOG_POSTS_PER_PAGE = int(os.environ.get("FLASKBLOG_POSTS_PER_PAGE"))
+    FLASKBLOG_FOLLOWERS_PER_PAGE = int(os.environ.get("FLASKBLOG_FOLLOWERS_PER_PAGE"))
 
     @staticmethod
     def init_app(app):
@@ -34,7 +35,10 @@ class DevelopmentConfig(Config):
 
 class TestingConfig(Config):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get("TEST_DATABASE_URL") or "sqlite://"
+    PRESERVE_CONTEXT_ON_EXCEPTION = False
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        "TEST_DATABASE_URL"
+    ) or "sqlite:////" + os.path.join(basedir, "data-test.sqlite")
 
 
 class ProductionConfig(Config):
