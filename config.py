@@ -20,6 +20,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     FLASKBLOG_POSTS_PER_PAGE = int(os.environ.get("FLASKBLOG_POSTS_PER_PAGE"))
     FLASKBLOG_FOLLOWERS_PER_PAGE = int(os.environ.get("FLASKBLOG_FOLLOWERS_PER_PAGE"))
+    FLASKBLOG_COMMENTS_PER_PAGE = int(os.environ.get("FLASKBLOG_FOLLOWERS_PER_PAGE"))
 
     @staticmethod
     def init_app(app):
