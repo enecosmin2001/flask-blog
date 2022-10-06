@@ -170,6 +170,12 @@ class User(UserMixin, db.Model):
             self.avatar_hash = self.gravatar_hash()
 
     @property
+    def followed_posts(self):
+        return Post.query.join(Follow, Follow.followed_id == Post.author_id).filter(
+            Follow.follower_id == self.id
+        )
+
+    @property
     def password(self):
         raise AttributeError("Password is not a readable attribute")
 
