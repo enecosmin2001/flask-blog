@@ -2,11 +2,13 @@ import hashlib
 from datetime import datetime
 
 import bleach
-from flask import current_app, request
+from flask import current_app, request, url_for
 from flask_login import AnonymousUserMixin, UserMixin
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from markdown import markdown
 from werkzeug.security import check_password_hash, generate_password_hash
+
+from app.exceptions import ValidationError
 
 from . import db, login_manager
 
@@ -164,6 +166,19 @@ class User(UserMixin, db.Model):
         db.session.add(self)
         return True
 
+    def generate_auth_token(self, expiration):
+        s = Serializer(current_app.config["SECRET_KEY"], expires_in=expiration)
+        return s.dumps({"id": self.id}).decode("utf-8")
+
+    @staticmethod
+    def verify_auth_token(token):
+        s = Serializer(current_app.config["SECRET_KEY"])
+        try:
+            data = s.loads()
+        except Exception:
+            return None
+        return User.query.get(data["id"])
+
     def can(self, perm):
         return self.role is not None and self.role.has_permission(perm)
 
@@ -202,6 +217,20 @@ class User(UserMixin, db.Model):
         if user.id is None:
             return False
         return self.followers.filter_by(follower_id=user.id).first() is not None
+
+    def to_json(self):
+        json_user = {
+            "url": url_for("apiv1.get_user", id=self.id),
+            "username": self.username,
+            "member_since": self.member_since,
+            "last_seen": self.last_seen,
+            "posts_url": url_for("apiv1.get_user_posts", id=self.id),
+            "posts_count": self.posts.count(),
+            "comments_url": url_for("apiv1.user_comments", id=self.id),
+            "comments_count": self.comments.count(),
+            "followed_posts_url": url_for("apiv1.get_user_followed_posts", id=self.id),
+        }
+        return json_user
 
     def __repr__(self):
         return "<User %r>" % self.username
@@ -259,6 +288,25 @@ class Post(db.Model):
                 markdown(value, output_format="html"), tags=allowed_tags, strip=True
             )
         )
+
+    def to_json(self):
+        json_post = {
+            "url": url_for("apiv1.get_post", id=self.id),
+            "body": self.body,
+            "body_html": self.body_html,
+            "timestamp": self.timestamp,
+            "author_url": url_for("apiv1.get_user", id=self.author.id),
+            "comments_url": url_for("apiv1.get_post_comments", id=self.id),
+            "comments_count": self.comments.count(),
+        }
+        return json_post
+
+    @staticmethod
+    def from_json(json_post):
+        body = json_post.get("body")
+        if body is None or body == "":
+            raise ValidationError("post does not have a body")
+        return Post(body=body)
 
 
 db.event.listen(Post.body, "set", Post.on_changed_body)
