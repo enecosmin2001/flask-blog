@@ -18,15 +18,15 @@ class SeleniumTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         options = webdriver.ChromeOptions()
-        # options.add_argument("headless")
-        # try:
-        ua = UserAgent()
-        user_agent = ua.random
-        options.add_argument(f"user-agent={user_agent}")
-        options.add_experimental_option("excludeSwitches", ["enable-automation"])
-        cls.client = webdriver.Chrome(chrome_options=options)
-        # except:
-        #     pass
+        options.add_argument("headless")
+        try:
+            ua = UserAgent()
+            user_agent = ua.random
+            options.add_argument(f"user-agent={user_agent}")
+            options.add_experimental_option("excludeSwitches", ["enable-automation"])
+            cls.client = webdriver.Chrome(chrome_options=options)
+        except Exception:
+            pass
 
         # skip these if the browser could not be started
         if cls.client:
