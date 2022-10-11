@@ -1,11 +1,39 @@
-from flask import g, jsonify, request, url_for
+from flask import current_app, g, jsonify, request, url_for
 
-from app import db
-from app.models import Permission, Post
-
-from ..decorators import permission_required
+from .. import db
+from ..models import Permission, Post
 from . import apiv1
+from .decorators import permission_required
 from .errors import forbidden
+
+
+@apiv1.route("/posts/")
+def get_posts():
+    page = request.args.get("page", 1, type=int)
+    pagination = Post.query.paginate(
+        page, per_page=current_app.config["FLASKBLOG_POSTS_PER_PAGE"], error_out=False
+    )
+    posts = pagination.items
+    prev = None
+    if pagination.has_prev:
+        prev = url_for("apiv1.get_posts", page=page - 1)
+    next = None
+    if pagination.has_next:
+        next = url_for("apiv1.get_posts", page=page + 1)
+    return jsonify(
+        {
+            "posts": [post.to_json() for post in posts],
+            "prev": prev,
+            "next": next,
+            "count": pagination.total,
+        }
+    )
+
+
+@apiv1.route("/posts/<int:id>")
+def get_post(id):
+    post = Post.query.get_or_404(id)
+    return jsonify(post.to_json())
 
 
 @apiv1.route("/posts/", methods=["POST"])
@@ -15,8 +43,10 @@ def new_post():
     post.author = g.current_user
     db.session.add(post)
     db.session.commit()
-    return jsonify(
-        post.to_json(), 201, {"Location": url_for("apiv1.get_post", id=post.id)}
+    return (
+        jsonify(post.to_json()),
+        201,
+        {"Location": url_for("apiv1.get_post", id=post.id)},
     )
 
 
@@ -29,19 +59,4 @@ def edit_post(id):
     post.body = request.json.get("body", post.body)
     db.session.add(post)
     db.session.commit()
-    return jsonify(post.to_json())
-
-
-@apiv1.route("/posts/")
-def get_posts():
-    posts = Post.query.all()
-
-    [print(post.to_json()) for post in posts]
-
-    return jsonify({"posts": [post.to_json() for post in posts]})
-
-
-@apiv1.route("/posts/<int:id>")
-def get_post(id):
-    post = Post.query.get_or_404(id)
     return jsonify(post.to_json())
