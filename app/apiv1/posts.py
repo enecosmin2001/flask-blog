@@ -35,6 +35,9 @@ def edit_post(id):
 @apiv1.route("/posts/")
 def get_posts():
     posts = Post.query.all()
+
+    [print(post.to_json()) for post in posts]
+
     return jsonify({"posts": [post.to_json() for post in posts]})
 
 
