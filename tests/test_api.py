@@ -62,7 +62,7 @@ class APIV1TestCase(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         json_response = json.loads(response.get_data(as_text=True))
-        self.assertEqual("http://127.0.0.1" + json_response["url"], url)
+        self.assertEqual("http://127.0.0.1:8943" + json_response["url"], url)
         self.assertEqual(json_response["body"], "Body of the *blog* post")
         self.assertEqual(
             json_response["body_html"], "<p>Body of the <em>blog</em> post</p>"

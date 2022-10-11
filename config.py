@@ -38,7 +38,7 @@ class TestingConfig(Config):
     TESTING = True
     # PRESERVE_CONTEXT_ON_EXCEPTION = False
     WTF_CSRF_ENABLED = False
-    SERVER_NAME = "127.0.0.1"
+    SERVER_NAME = "127.0.0.1:8943"
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         "TEST_DATABASE_URL"
     ) or "sqlite:////" + os.path.join(basedir, "data-test.sqlite")
