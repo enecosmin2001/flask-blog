@@ -1,1 +1,1 @@
-web: gunicorn --bind 0.0.0.0:5001 flaskblog:app
+web: gunicorn --bind 0.0.0.0:8000 flaskblog:app
