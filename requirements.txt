@@ -36,3 +36,4 @@ bleach==5.0.1
 Markdown==3.4.1
 Flask-HTTPAuth==4.7.0
 fake-useragent==0.1.11
+coverage==6.5.0
