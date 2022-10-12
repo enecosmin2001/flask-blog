@@ -15,14 +15,22 @@ class Config:
     MAIL_USE_SSL = True
     MAIL_USERNAME = os.environ.get("MAIL_USERNAME")
     MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")
-    FLASKBLOG_MAIL_SUBJECT_PREFIX = os.environ.get("FLASKBLOG_MAIL_SUBJECT_PREFIX")
-    FLASKBLOG_MAIL_SENDER = os.environ.get("FLASKBLOG_MAIL_SENDER")
+    FLASKBLOG_MAIL_SUBJECT_PREFIX = os.environ.get(
+        "FLASKBLOG_MAIL_SUBJECT_PREFIX", "[FlaskBlog]"
+    )
+    FLASKBLOG_MAIL_SENDER = os.environ.get(
+        "FLASKBLOG_MAIL_SENDER", "FlaskBlog Admin <FlaskBlog@example.com>"
+    )
     FLASKBLOG_ADMIN = os.environ.get("FLASKBLOG_ADMIN")
     FLASKBLOG_ADMIN_PASSWORD = os.environ.get("FLASKBLOG_ADMIN_PASSWORD")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    FLASKBLOG_POSTS_PER_PAGE = int(os.environ.get("FLASKBLOG_POSTS_PER_PAGE"))
-    FLASKBLOG_FOLLOWERS_PER_PAGE = int(os.environ.get("FLASKBLOG_FOLLOWERS_PER_PAGE"))
-    FLASKBLOG_COMMENTS_PER_PAGE = int(os.environ.get("FLASKBLOG_FOLLOWERS_PER_PAGE"))
+    FLASKBLOG_POSTS_PER_PAGE = int(os.environ.get("FLASKBLOG_POSTS_PER_PAGE", 30))
+    FLASKBLOG_FOLLOWERS_PER_PAGE = int(
+        os.environ.get("FLASKBLOG_FOLLOWERS_PER_PAGE", 20)
+    )
+    FLASKBLOG_COMMENTS_PER_PAGE = int(
+        os.environ.get("FLASKBLOG_FOLLOWERS_PER_PAGE", 20)
+    )
     SQLALCHEMY_RECORD_QUERIES = True
     FLASKBLOG_SLOW_DB_QUERY_TIME = 0.5
     SSL_REDIRECT = False
@@ -106,10 +114,25 @@ class HerokuConfig(ProductionConfig):
         app.wsgi_app = ProxyFix(app.wsgi_app)
 
 
+class DockerConfig(ProductionConfig):
+    @classmethod
+    def init_app(cls, app):
+        ProductionConfig.init_app(app)
+
+        # log to stderr
+        import logging
+        from logging import StreamHandler
+
+        file_handler = StreamHandler()
+        file_handler.setLevel(logging.INFO)
+        app.logger.addHandler(file_handler)
+
+
 config = {
     "development": DevelopmentConfig,
     "testing": TestingConfig,
     "production": ProductionConfig,
     "heroku": HerokuConfig,
+    "docker": DockerConfig,
     "default": DevelopmentConfig,
 }
