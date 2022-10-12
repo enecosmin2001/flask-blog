@@ -6,7 +6,6 @@ from flask import (
     redirect,
     render_template,
     request,
-    session,
     url_for,
 )
 from flask_login import current_user, login_required
@@ -15,8 +14,7 @@ from flask_sqlalchemy import get_debug_queries
 from app.decorators import admin_required, permission_required
 
 from .. import db
-from ..email import send_email
-from ..models import Comment, Follow, Permission, Post, Role, User
+from ..models import Comment, Permission, Post, Role, User
 from . import main
 from .forms import CommentForm, EditProfileAdminForm, EditProfileForm, PostForm
 

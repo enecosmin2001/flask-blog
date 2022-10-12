@@ -34,3 +34,5 @@ psycopg2-binary==2.9.4
 python-dotenv==0.21.0
 bleach==5.0.1
 Markdown==3.4.1
+Flask-HTTPAuth==4.7.0
+fake-useragent==0.1.11

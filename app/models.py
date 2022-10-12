@@ -2,7 +2,7 @@ import hashlib
 from datetime import datetime
 
 import bleach
-from flask import current_app, request, url_for
+from flask import current_app, url_for
 from flask_login import AnonymousUserMixin, UserMixin
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from markdown import markdown

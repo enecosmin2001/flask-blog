@@ -5,6 +5,7 @@ from flask_mail import Mail
 from flask_moment import Moment
 from flask_pagedown import PageDown
 from flask_sqlalchemy import SQLAlchemy
+from flask_sslify import SSLify
 
 from config import config
 
@@ -30,7 +31,6 @@ def create_app(config_name):
     pagedown.init_app(app)
 
     if app.config["SSL_REDIRECT"]:
-        from flask_sslify import SSLify
 
         _ = SSLify(app)
 
