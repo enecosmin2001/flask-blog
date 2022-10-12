@@ -155,6 +155,29 @@ class User(UserMixin, db.Model):
                 db.session.add(user)
                 db.session.commit()
 
+    @staticmethod
+    def create_admin_account():
+        admin_email = current_app.config["FLASKBLOG_ADMIN"]
+        admin_pwd = current_app.config["FLASKBLOG_ADMIN_PASSWORD"]
+
+        u = User.query.filter_by(email=admin_email).first()
+
+        if not u:
+            admin_role = Role.query.filter_by(name="Administrator").first()
+            admin_u = User(
+                email=admin_email,
+                password=admin_pwd,
+                username=admin_email.split("@")[0],
+                role=admin_role,
+                confirmed=True,
+            )
+            db.session.add(admin_u)
+            db.session.commit()
+        else:
+            if not u.confirmed:
+                u.confirmed = True
+                db.session.commit()
+
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
@@ -199,6 +222,8 @@ class User(UserMixin, db.Model):
         db.session.commit()
 
     def gravatar_hash(self):
+        if not self.email:
+            return ""
         return hashlib.md5(self.email.lower().encode("utf-8")).hexdigest()
 
     def gravatar(self, size=100, default="identicon", rating="g"):

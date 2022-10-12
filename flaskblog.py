@@ -83,5 +83,8 @@ def deploy():
     # create or update user Roles
     Role.insert_roles()
 
+    # create admin account
+    User.create_admin_account()
+
     # ensure all users follow themselves
     User.add_self_follows()

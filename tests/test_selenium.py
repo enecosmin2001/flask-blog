@@ -1,10 +1,8 @@
 import re
 import threading
-import time
 import unittest
 
 from fake_useragent import UserAgent
-from flask import url_for
 from selenium import webdriver
 
 import app.fake as fake
