@@ -23,6 +23,7 @@ class Config:
     FLASKBLOG_COMMENTS_PER_PAGE = int(os.environ.get("FLASKBLOG_FOLLOWERS_PER_PAGE"))
     SQLALCHEMY_RECORD_QUERIES = True
     FLASKBLOG_SLOW_DB_QUERY_TIME = 0.5
+    SSL_REDIRECT = False
 
     @staticmethod
     def init_app(app):
@@ -50,6 +51,8 @@ class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         "DATABASE_URL"
     ) or "sqlite:///" + os.path.join(basedir, "data.sqlite")
+
+    SSL_REDIRECT = True
 
     @classmethod
     def init_app(cls, app):
@@ -81,6 +84,8 @@ class ProductionConfig(Config):
 
 
 class HerokuConfig(ProductionConfig):
+    SSL_REDIRECT = True if os.environ.get("DYNO") else False
+
     @classmethod
     def init_app(cls, app):
         ProductionConfig.init_app(app)
@@ -91,6 +96,11 @@ class HerokuConfig(ProductionConfig):
         file_handler = StreamHandler()
         file_handler.setLevel(logging.INFO)
         app.logger.addHandler(file_handler)
+
+        # handle reverse proxy server headers
+        from werkzeug.contrib.fixers import ProxyFix
+
+        app.wsgi_app = ProxyFix(app.wsgi_app)
 
 
 config = {
