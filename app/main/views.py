@@ -10,6 +10,7 @@ from flask import (
     url_for,
 )
 from flask_login import current_user, login_required
+from flask_sqlalchemy import get_debug_queries
 
 from app.decorators import admin_required, permission_required
 
@@ -18,6 +19,17 @@ from ..email import send_email
 from ..models import Comment, Follow, Permission, Post, Role, User
 from . import main
 from .forms import CommentForm, EditProfileAdminForm, EditProfileForm, PostForm
+
+
+@main.after_app_request
+def after_request(response):
+    for query in get_debug_queries():
+        if query.duration >= current_app.config["FLASKBLOG_SLOW_DB_QUERY_TIME"]:
+            current_app.logger.warning(
+                f"Slow query {query.statement}\nParameters:{query.parameters}\n \
+                Duration:{query.duration}\nContext:{query.context}\n"
+            )
+    return response
 
 
 @main.route("/", methods=["GET", "POST"])

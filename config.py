@@ -21,6 +21,8 @@ class Config:
     FLASKBLOG_POSTS_PER_PAGE = int(os.environ.get("FLASKBLOG_POSTS_PER_PAGE"))
     FLASKBLOG_FOLLOWERS_PER_PAGE = int(os.environ.get("FLASKBLOG_FOLLOWERS_PER_PAGE"))
     FLASKBLOG_COMMENTS_PER_PAGE = int(os.environ.get("FLASKBLOG_FOLLOWERS_PER_PAGE"))
+    SQLALCHEMY_RECORD_QUERIES = True
+    FLASKY_SLOW_DB_QUERY_TIME = 0.5
 
     @staticmethod
     def init_app(app):
