@@ -53,6 +53,7 @@ class ProductionConfig(Config):
     ) or "sqlite:///" + os.path.join(basedir, "data.sqlite")
 
     SSL_REDIRECT = True
+    DEBUG = False
 
     @classmethod
     def init_app(cls, app):

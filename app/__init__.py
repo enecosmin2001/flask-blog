@@ -30,9 +30,9 @@ def create_app(config_name):
     pagedown.init_app(app)
 
     if app.config["SSL_REDIRECT"]:
-        from flask_sslify import SSlify
+        from flask_sslify import SSLify
 
-        _ = SSlify(app)
+        _ = SSLify(app)
 
     from .main import main as main_blueprint
 
