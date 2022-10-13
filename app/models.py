@@ -292,7 +292,8 @@ class Post(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     author_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     body_html = db.Column(db.Text)
-
+    text_to_image = db.Column(db.String(100))
+    image_path = db.Column(db.String(100), default=None)
     comments = db.relationship("Comment", backref="post", lazy="dynamic")
 
     @staticmethod

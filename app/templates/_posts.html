@@ -3,8 +3,7 @@
     <li class="post">
         <div class="profile-thumbnail">
             <a href="{{ url_for('.user', username=post.author.username) }}">
-                <img class="img-rounded profile-thumbnail"
-                src="{{ post.author.gravatar(size=40) }}">
+                <img class="img-rounded profile-thumbnail" src="{{ post.author.gravatar(size=40) }}">
             </a>
         </div>
         <div class="post-content">
@@ -16,10 +15,13 @@
             </div>
             <div class="post-body">
                 {% if post.body_html %}
-                    {{ post.body_html | safe }}
+                {{ post.body_html | safe }}
                 {% else %}
-                    {{ post.body }}
+                {{ post.body }}
                 {% endif %}
+            </div>
+            <div class="post-img">
+                {{ post.image_path }}
             </div>
             <div class="post-footer">
                 <a href="{{ url_for('.post', id=post.id) }}">

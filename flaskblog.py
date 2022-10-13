@@ -6,6 +6,7 @@ from flask_migrate import Migrate, upgrade
 
 from app import create_app, db
 from app.models import Role, User
+from app.services.dreamer import Dreamer
 
 app = create_app(os.getenv("FLASK_CONFIG") or "default")
 migrate = Migrate(app, db)
@@ -88,3 +89,6 @@ def deploy():
 
     # ensure all users follow themselves
     User.add_self_follows()
+
+    # # generate dream images that are not yet generated
+    Dreamer.generate_missing_dream_images()

@@ -11,6 +11,7 @@ from flask import (
 from flask_login import current_user, login_required
 from flask_sqlalchemy import get_debug_queries
 
+from app.celery_worker import generate_dream_image
 from app.decorators import admin_required, permission_required
 
 from .. import db
@@ -35,9 +36,14 @@ def after_request(response):
 def index():
     p_form = PostForm()
     if current_user.can(Permission.WRITE) and p_form.validate_on_submit():
-        post = Post(body=p_form.body.data, author=current_user._get_current_object())
+        post = Post(
+            body=p_form.body.data,
+            text_to_image=p_form.text_to_img.data,
+            author=current_user._get_current_object(),
+        )
         db.session.add(post)
         db.session.commit()
+        generate_dream_image.delay(post.id, post.text_to_image)
         return redirect(url_for("main.index"))
 
     show_followed = bool(request.cookies.get("show_followed", ""))

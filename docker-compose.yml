@@ -2,9 +2,7 @@ version: "3.9"
 services:
 
   flaskblog:
-    build:
-      context: .
-      dockerfile: ./docker/flaskblog/Dockerfile
+    build: .
     ports:
       - "8000:5000"
     env_file:
@@ -12,6 +10,7 @@ services:
     links:
       - mysql:dbserver
     restart: always
+    command: /home/flaskblog/start_flaskblog.sh
 
   mysql:
     image: "mysql/mysql-server:5.7.13"
@@ -24,23 +23,21 @@ services:
     image: redis:7.0-alpine
 
   celery_worker:
-    build:
-      context: .
-      dockerfile: ./docker/celery/worker/Dockerfile
+    build: .
     container_name: celery_worker
     env_file:
       - .env-docker
     depends_on:
+      - flaskblog
       - redis
     links:
       - mysql:dbserver
     restart: always
+    command: /home/flaskblog/start_celery_worker.sh
 
   celery_flower:
     container_name: celery_flower
-    build:
-      context: .
-      dockerfile: ./docker/celery/flower/Dockerfile
+    build: .
     ports:
       - 5556:5555
     env_file:
@@ -50,3 +47,4 @@ services:
       - redis
       - celery_worker
     restart: always
+    command: /home/flaskblog/start_celery_flower.sh
