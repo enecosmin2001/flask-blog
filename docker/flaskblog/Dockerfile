@@ -9,13 +9,13 @@ USER flaskblog
 WORKDIR /home/flaskblog
 
 COPY requirements.txt requirements.txt
-
 RUN python -m venv venv
 RUN venv/bin/pip install -r requirements.txt
 
 COPY app app
 COPY migrations migrations
-COPY flaskblog.py config.py boot.sh ./
+COPY flaskblog.py config.py docker/flaskblog/start.sh ./
 
+# run-time configuration
 EXPOSE 5000
-ENTRYPOINT ["./boot.sh"]
+ENTRYPOINT ["./start.sh"]

@@ -1,7 +1,10 @@
 version: "3.9"
 services:
+
   flaskblog:
-    build: .
+    build:
+      context: .
+      dockerfile: ./docker/flaskblog/Dockerfile
     ports:
       - "8000:5000"
     env_file:
@@ -9,8 +12,41 @@ services:
     links:
       - mysql:dbserver
     restart: always
+
   mysql:
     image: "mysql/mysql-server:5.7.13"
     env_file:
       - .env-docker-mysql
+    restart: always
+
+  redis:
+    container_name: redis
+    image: redis:7.0-alpine
+
+  celery_worker:
+    build:
+      context: .
+      dockerfile: ./docker/celery/worker/Dockerfile
+    container_name: celery_worker
+    env_file:
+      - .env-docker
+    depends_on:
+      - redis
+    links:
+      - mysql:dbserver
+    restart: always
+
+  celery_flower:
+    container_name: celery_flower
+    build:
+      context: .
+      dockerfile: ./docker/celery/flower/Dockerfile
+    ports:
+      - 5556:5555
+    env_file:
+      - .env-docker
+    depends_on:
+      - flaskblog
+      - redis
+      - celery_worker
     restart: always
