@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  flaskblog:
+    build: .
+    ports:
+      - "8000:5000"
+    env_file:
+      - .env-docker
+    links:
+      - mysql:dbserver
+    restart: always
+  mysql:
+    image: "mysql/mysql-server:5.7.13"
+    env_file:
+      - .env-docker-mysql
+    restart: always

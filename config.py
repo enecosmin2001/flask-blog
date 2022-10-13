@@ -115,6 +115,9 @@ class HerokuConfig(ProductionConfig):
 
 
 class DockerConfig(ProductionConfig):
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
+    DEBUG = True
+
     @classmethod
     def init_app(cls, app):
         ProductionConfig.init_app(app)
